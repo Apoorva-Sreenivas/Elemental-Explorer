@@ -2,6 +2,7 @@
 
 import pygame
 from clean_csv import scrub_to_csv as scrub
+from details_class import main
 
 pygame.init()
 
@@ -9,8 +10,8 @@ pygame.init()
 dataset = scrub()
 
 fps=60
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 900
+HEIGHT = 700
 screen = pygame.display.set_mode([WIDTH,HEIGHT])
 pygame.display.set_caption('Elemental Explorer')
 timer = pygame.time.Clock()
@@ -82,7 +83,8 @@ def draw_screen(data):
 
         screen.blit(font.render(elem[1],True,'black'),(x_pos+5,y_pos+5))
         screen.blit(font.render(elem[2],True,'black'),(x_pos+10,y_pos+25))
-
+        # was returning i which is the index number and not the atomic number here
+        # we are using this to draw the highligts not for the data access 
         element_list.append((box,(i,color)))
 
         # we add a direction explaining the lanthanoid and actinoid series that are at the bottom of the table 
@@ -125,6 +127,32 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            # print(mouse_pos)
+            for element in elements:
+                rect = element[0]
+                # print(rect)
+                if rect.collidepoint(mouse_pos):
+                    # print("--------")
+                    # print(rect)
+                    # print(mouse_pos)
+                    atnum = int(dataset[element[1][0]][1])
+                    # print(atnum)
+                    main(atnum)
+                    
+                    # print(atnum)
+                    # if atnum<=56:
+                    #     main(atnum+1)
+                    # elif atnum>=57 and atnum<=70:
+                    #     main(atnum-33)
+                    # # elif atnum>=71 and atnum<=88:
+                    # #     main(atnum+15)
+                    # # elif atnum>=89 and atnum<=102:
+                    # #     main(atnum-15)
+                    # # elif atnum>=103 and atnum<=118:
+                    # #     main(atnum+29)
 
     mouse_pos = pygame.mouse.get_pos()
     highlight = False
