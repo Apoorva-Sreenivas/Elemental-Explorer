@@ -1,7 +1,7 @@
 import pygame
 from clean_csv import scrub_to_csv as scrub
 from details_class import main
-import cv2
+
 
 pygame.init()
 
