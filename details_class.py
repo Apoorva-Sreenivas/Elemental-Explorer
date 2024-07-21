@@ -28,6 +28,35 @@ class AtomicStructureVisualizer:
                     }
         return None
 
+
+    def draw_wrapped_text(self,image, text, position, font, font_scale, color, thickness, wrap_width):
+    
+        x, y = position
+        words = text.split(' ')
+        line = ''
+        lines = []
+
+        for word in words:
+            # Add word to the line
+            test_line = line + word + ' '
+            (test_width, _), _ = cv2.getTextSize(test_line, font, font_scale, thickness)
+
+            # Check if the line width exceeds the wrap width
+            if test_width > wrap_width:
+                lines.append(line)
+                line = word + ' '
+            else:
+                line = test_line
+
+        # Add the last line
+        lines.append(line)
+
+        # Draw each line on the image
+        for line in lines:
+            cv2.putText(image, line, (x, y), font, font_scale, color, thickness)
+            y += int(cv2.getTextSize(line, font, font_scale, thickness)[0][1] * 2)
+        return y 
+
     def draw_atom(self, image, center_x, center_y, nucleus_radius, electron_orbit_radius, element_properties):
         # Define colors
         black = (0, 0, 0)
@@ -80,9 +109,10 @@ class AtomicStructureVisualizer:
 
         # Set starting coordinates for properties text
         prop_start_x, prop_start_y = 600, 100
-
+        wrap_width = 600 
         for i, prop in enumerate(properties_text):
-            cv2.putText(image, prop, (prop_start_x, prop_start_y + i * 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, black, 2)
+            # cv2.putText(image, prop, (prop_start_x, prop_start_y + i * 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, black, 2)
+            prop_start_y = self.draw_wrapped_text(image, prop, (prop_start_x, prop_start_y + 5), cv2.FONT_HERSHEY_SIMPLEX, 0.7, black, 1, wrap_width)
 
     def visualize_element(self, atomic_number):
         # Create a blank white image
